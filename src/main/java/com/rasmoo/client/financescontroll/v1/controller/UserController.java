@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rasmoo.client.financescontroll.entity.Entry;
 import com.rasmoo.client.financescontroll.entity.User;
 import com.rasmoo.client.financescontroll.repository.IUserRepository;
 import com.rasmoo.client.financescontroll.v1.vo.Response;
@@ -22,8 +21,8 @@ public class UserController {
 	private IUserRepository userRepository;
 	
 	@PostMapping
-	public ResponseEntity<Response<Entry>> cadastrarUsuario(@RequestBody UserVO userVo) {
-		Response<Entry> response = new Response<>();
+	public ResponseEntity<Response<User>> cadastrarUsuario(@RequestBody UserVO userVo) {
+		Response<User> response = new Response<>();
 		
 		try {
 			
@@ -33,7 +32,7 @@ public class UserController {
 			user.getCredencial().setEmail(userVo.getEmail());
 			user.getCredencial().setSenha(userVo.getPassword());
 			
-			this.userRepository.save(user);
+			response.setData(this.userRepository.save(user));
 			
 			return ResponseEntity.status(HttpStatus.CREATED).body(response);
 			
