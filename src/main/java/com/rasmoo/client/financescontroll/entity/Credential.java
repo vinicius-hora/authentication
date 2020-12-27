@@ -2,13 +2,14 @@ package com.rasmoo.client.financescontroll.entity;
 
 import javax.persistence.Embeddable;
 
-import lombok.Getter;
+import lombok.Data;
 
 @Embeddable
-@Getter
+@Data
 public class Credential {
 	
 	private String email;
 
 	private String senha;
+	
 }
