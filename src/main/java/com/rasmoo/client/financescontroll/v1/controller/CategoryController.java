@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +19,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rasmoo.client.financescontroll.entity.Category;
+import com.rasmoo.client.financescontroll.entity.User;
 import com.rasmoo.client.financescontroll.repository.ICategoryRepository;
+import com.rasmoo.client.financescontroll.repository.IUserRepository;
 import com.rasmoo.client.financescontroll.v1.dto.CategoryDTO;
 import com.rasmoo.client.financescontroll.v1.vo.Response;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
-@RequestMapping("/v1/categoria")
+@RequestMapping({"/v1/categoria", "/v2/categoria"})
+@RequiredArgsConstructor
 public class CategoryController {
 
 	@Autowired
@@ -30,12 +37,19 @@ public class CategoryController {
 	
 	private ModelMapper mapper = new ModelMapper();
 
+	private final IUserRepository userRepository;
+
 	@PostMapping
 	public ResponseEntity<Response<Category>> cadastrarCategoria(@RequestBody CategoryDTO categoria) {
 		Response<Category> response = new Response<>();
 		try {
+
+			User usuario = this.findAuthUser();
+
 			if (categoria != null && categoria.getId() == null) {
-				Category categoriaEntity = this.categoryRepository.save(mapper.map(categoria, Category.class));
+				Category categoriaEntity = mapper.map(categoria, Category.class);
+				categoriaEntity.setUser(usuario);
+				categoryRepository.save(categoriaEntity);
 				response.setData(categoriaEntity);
 				response.setStatusCode(HttpStatus.CREATED.value());
 				return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -54,9 +68,13 @@ public class CategoryController {
 		Response<Category> response = new Response<>();
 		try {
 			if (categoria != null && categoria.getId() != null) {
-				Optional<Category> catogory = this.categoryRepository.findById(categoria.getId());
-				if (catogory.isPresent()) {
-					response.setData(this.categoryRepository.save(mapper.map(categoria, Category.class)));
+				User usuario = this.findAuthUser();
+				Optional<Category> category = this.categoryRepository.findById(categoria.getId());
+				if (category.isPresent() && category.get().getId() == usuario.getId()) {
+					Category categoriaEntity = mapper.map(categoria, Category.class);
+					categoriaEntity.setUser(usuario);
+					categoryRepository.save(categoriaEntity);
+					response.setData(categoriaEntity);
 					response.setStatusCode(HttpStatus.OK.value());
 					return ResponseEntity.status(HttpStatus.OK).body(response);
 				}
@@ -74,7 +92,8 @@ public class CategoryController {
 	public ResponseEntity<Response<List<Category>>> listarCategorias() {
 		Response<List<Category>> response = new Response<>();
 		try {
-			response.setData(this.categoryRepository.findAll());
+			User usuario = this.findAuthUser();
+			response.setData(this.categoryRepository.findAllByUserId(usuario.getId()));
 			response.setStatusCode(HttpStatus.OK.value());
 			return ResponseEntity.status(HttpStatus.OK).body(response);
 		} catch (Exception e) {
@@ -89,9 +108,9 @@ public class CategoryController {
 	public ResponseEntity<Response<Category>> consultarCategoria(@PathVariable Long id) {
 		Response<Category> response = new Response<>();
 		try {
-			Optional<Category> catogory = this.categoryRepository.findById(id);
-			if (catogory.isPresent()) {
-				response.setData(catogory.get());
+			Optional<Category> category = this.categoryRepository.findById(id);
+			if (category.isPresent()) {
+				response.setData(category.get());
 			}
 			response.setStatusCode(HttpStatus.OK.value());
 			return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -118,6 +137,20 @@ public class CategoryController {
 			response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 		}
+
+	}
+
+	private User findAuthUser() throws Exception{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+			Optional<User> usuario = this.userRepository.findByEmail(auth.getName());
+
+			if(!usuario.isPresent()){
+				throw new Exception();
+			}
+		
+			return usuario.get();
+
 
 	}
 

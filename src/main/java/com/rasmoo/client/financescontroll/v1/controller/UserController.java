@@ -3,6 +3,7 @@ package com.rasmoo.client.financescontroll.v1.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,12 +14,17 @@ import com.rasmoo.client.financescontroll.repository.IUserRepository;
 import com.rasmoo.client.financescontroll.v1.vo.Response;
 import com.rasmoo.client.financescontroll.v1.vo.UserVO;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping(value = "/v1/usuario")
+@RequiredArgsConstructor
 public class UserController {
 	
 	@Autowired
 	private IUserRepository userRepository;
+
+	private final PasswordEncoder pass;
 	
 	@PostMapping
 	public ResponseEntity<Response<User>> cadastrarUsuario(@RequestBody UserVO userVo) {
@@ -30,7 +36,7 @@ public class UserController {
 			
 			user.setNome(userVo.getNome());
 			user.getCredencial().setEmail(userVo.getEmail());
-			user.getCredencial().setSenha(userVo.getPassword());
+			user.getCredencial().setSenha(pass.encode(userVo.getPassword()));
 			
 			response.setData(this.userRepository.save(user));
 			

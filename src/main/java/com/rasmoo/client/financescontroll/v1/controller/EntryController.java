@@ -3,6 +3,7 @@ package com.rasmoo.client.financescontroll.v1.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.aspectj.lang.annotation.RequiredTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rasmoo.client.financescontroll.entity.Category;
 import com.rasmoo.client.financescontroll.entity.Entry;
+import com.rasmoo.client.financescontroll.entity.User;
 import com.rasmoo.client.financescontroll.repository.ICategoryRepository;
 import com.rasmoo.client.financescontroll.repository.IEntryRepository;
+import com.rasmoo.client.financescontroll.v1.service.UserInfoService;
 import com.rasmoo.client.financescontroll.v1.vo.EntryVO;
 import com.rasmoo.client.financescontroll.v1.vo.Response;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/v1/lancamento")
+@RequiredArgsConstructor
 public class EntryController {
 
 	@Autowired
@@ -32,11 +38,14 @@ public class EntryController {
 	@Autowired
 	private ICategoryRepository categoryRepository;
 
+	private final UserInfoService userInfoService;
+
 	@PostMapping
 	public ResponseEntity<Response<Entry>> cadastrarLancamento(@RequestBody EntryVO entryVO) {
 		Response<Entry> response = new Response<>();
 		try {
-			Optional<Category> category = this.categoryRepository.findById(entryVO.getCategoryId());
+			User usuario = this.userInfoService.findAuth();
+			Optional<Category> category = this.categoryRepository.findByUserId(entryVO.getCategoryId(), usuario.getId());
 			if (entryVO.getId() == null && category.isPresent()) {
 
 				Entry lancamento = new Entry();
@@ -62,8 +71,9 @@ public class EntryController {
 	public ResponseEntity<Response<Entry>> atualizarLancamento(@RequestBody EntryVO entryVO) {
 		Response<Entry> response = new Response<>();
 		try {
-
-			Optional<Category> category = this.categoryRepository.findById(entryVO.getCategoryId());
+			
+			User usuario = this.userInfoService.findAuth();
+			Optional<Category> category = this.categoryRepository.findByUserId(entryVO.getCategoryId(), usuario.getId());
 			Optional<Entry> entry = this.entryRepository.findById(entryVO.getId());
 			if (entry.isPresent() && category.isPresent()) {
 				
