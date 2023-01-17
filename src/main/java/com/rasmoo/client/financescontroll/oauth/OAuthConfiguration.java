@@ -17,16 +17,14 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
 @Configuration
-@RequiredArgsConstructor
 public class OAuthConfiguration {
-
-
-    private  final AuthenticationManager authenticationManager;
 
     public static final String RESOURCE_ID = "financesControll";
 
     @EnableAuthorizationServer
-    public  class AuthorizationServer extends AuthorizationServerConfigurerAdapter{
+    public static class AuthorizationServer extends AuthorizationServerConfigurerAdapter{
+        @Autowired
+        private  AuthenticationManager authenticationManager;
 
 
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
@@ -37,8 +35,16 @@ public class OAuthConfiguration {
             clients.inMemory()
                     .withClient("cliente-web")
                     .secret("$2a$10$xD06tjPVtCaBSpjmSn.7z.rJqjHxvaLKxytdsql.zPiJ0YETCZO5K")
-                    .authorizedGrantTypes("password")
+                    .authorizedGrantTypes("password", "client_credentials")
                     .scopes("read", "write")
+                    .accessTokenValiditySeconds(3600)
+                    .resourceIds(RESOURCE_ID)
+                    .and()
+                    .withClient("cliente-canva")
+                    .secret("$2a$10$xD06tjPVtCaBSpjmSn.7z.rJqjHxvaLKxytdsql.zPiJ0YETCZO5K")
+                    .authorizedGrantTypes("authorization_code", "implicit")
+                    .scopes("read")
+                    .redirectUris("https://www.canva.com/pt_br/")
                     .accessTokenValiditySeconds(3600)
                     .resourceIds(RESOURCE_ID);
         }
@@ -56,7 +62,9 @@ public class OAuthConfiguration {
         public void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests().anyRequest().authenticated().and()
                     .requestMatchers()
-                    .antMatchers("/v2/categoria");
+                    .antMatchers("/v2/categoria")
+                    .and()
+                    .cors();
         }
 
     }

@@ -10,6 +10,7 @@ com/rasmoo/client/financescontroll/v1/dto/CategoryDTO.class
 com/rasmoo/client/financescontroll/repository/ICategoryRepository.class
 com/rasmoo/client/financescontroll/v1/vo/Response.class
 com/rasmoo/client/financescontroll/FinancescontrollApplication.class
+com/rasmoo/client/financescontroll/oauth/OAuthConfiguration$AuthorizationServer.class
 com/rasmoo/client/financescontroll/entity/Entry.class
 com/rasmoo/client/financescontroll/entity/Credential.class
 com/rasmoo/client/financescontroll/v1/controller/EntryController.class
