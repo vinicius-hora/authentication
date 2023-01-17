@@ -1,8 +1,11 @@
 package com.rasmoo.client.financescontroll.core.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.rasmoo.client.financescontroll.entity.User;
@@ -17,8 +20,10 @@ public class ResourceOwner implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        return null;
+        List<SimpleGrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(this.usuario.getRole()));
+
+        return roles;
     }
 
     @Override

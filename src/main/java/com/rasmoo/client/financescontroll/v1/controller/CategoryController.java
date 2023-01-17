@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,10 @@ import com.rasmoo.client.financescontroll.v1.vo.Response;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping({"/v1/categoria", "/v2/categoria"})
+@RequestMapping("/v1/categoria")
 @RequiredArgsConstructor
 @CrossOrigin
+@PreAuthorize(value = "#oauth2.hasScope('cw_logado') and hasRole('ROLE_CUSTOMER')")
 public class CategoryController {
 
 	@Autowired
@@ -83,6 +85,7 @@ public class CategoryController {
 	}
 
 	@GetMapping
+	@PreAuthorize(value = "#oauth2.hasScope('cw_logado') and hasRole('ROLE_CUSTOMER')")
 	public ResponseEntity<Response<List<Category>>> listarCategorias() {
 		Response<List<Category>> response = new Response<>();
 		try {
