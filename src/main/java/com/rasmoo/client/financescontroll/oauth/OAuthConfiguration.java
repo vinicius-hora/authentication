@@ -35,9 +35,9 @@ public class OAuthConfiguration {
             clients.inMemory()
                     .withClient("cliente-web")
                     .secret("$2a$10$xD06tjPVtCaBSpjmSn.7z.rJqjHxvaLKxytdsql.zPiJ0YETCZO5K")
-                    .authorizedGrantTypes("password", "client_credentials")
+                    .authorizedGrantTypes("password", "client_credentials", "refresh_token")
                     .scopes("read", "write")
-                    .accessTokenValiditySeconds(3600)
+                    .accessTokenValiditySeconds(16)
                     .resourceIds(RESOURCE_ID)
                     .and()
                     .withClient("cliente-canva")
@@ -61,9 +61,9 @@ public class OAuthConfiguration {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests().anyRequest().authenticated().and()
-                    .requestMatchers()
-                    .antMatchers("/v2/categoria")
-                    .and()
+//                    .requestMatchers()
+//                    .antMatchers("/v2/categoria")
+//                    .and()
                     .cors();
         }
 
