@@ -3,20 +3,20 @@ server:
   servlet:
     context-path: /api
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-  datasource:
+  #  jpa:
+  #    hibernate:
+  #      ddl-auto: update
+  datasource-fc:
     url: jdbc:postgresql://localhost:5432/financescontrollDB
     username: postgres
     password: solinftec
     driver-class-name: org.postgresql.Driver
-#  datasource-oauth:
-#   url: jdbc:postgresql://localhost:5432/oauth
-#   username: postgres
-#   password: solinftec
-#   driver-class-name: org.postgresql.Driver
-#   jpa.properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
-#   jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false
-#   jpa.show-sql: true
-#   jpa.hibernate.ddl-auto: update
+  datasource-oauth:
+    url: jdbc:postgresql://localhost:5432/oauth
+    username: postgres
+    password: solinftec
+    driver-class-name: org.postgresql.Driver
+    jpa.properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false
+    jpa.show-sql: true
+    jpa.hibernate.ddl-auto: update

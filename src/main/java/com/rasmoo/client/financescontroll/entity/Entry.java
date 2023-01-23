@@ -1,5 +1,6 @@
 package com.rasmoo.client.financescontroll.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -21,8 +22,9 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "ENTRY")
-public class Entry {
-	
+public class Entry implements Serializable {
+
+	private static final long serialVersionUID = 5367268877193247709L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "id")

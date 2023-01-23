@@ -14,6 +14,7 @@ class FinancescontrollApplicationTests {
 	@Test
 	void contextLoads() {
 		System.out.println(pass.encode("1234"));
+		System.out.println(pass.matches("1234", "$2a$10$ltScZCv9O6PvD4TJCl0TIOWA.B73UNYrzHc86yU0OCCV8ld1Vgmx."));
 	}
 
 }

@@ -12,11 +12,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Entity
 @Table(name = "CATEGORY")
-public class Category {
-	
+public class Category implements Serializable {
+
+	private static final long serialVersionUID = -1208152022954211978L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
