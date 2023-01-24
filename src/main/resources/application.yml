@@ -20,3 +20,9 @@ spring:
     jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false
     jpa.show-sql: true
     jpa.hibernate.ddl-auto: update
+
+host:
+  full:
+    dns:
+      auth:
+        link: http://localhost:4001/api/oauth/token
