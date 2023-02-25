@@ -9,12 +9,12 @@ spring:
   datasource-fc:
     url: jdbc:postgresql://localhost:5432/financescontrollDB
     username: postgres
-    password: solinftec
+    password: 
     driver-class-name: org.postgresql.Driver
   datasource-oauth:
     url: jdbc:postgresql://localhost:5432/oauth
     username: postgres
-    password: solinftec
+    password:
     driver-class-name: org.postgresql.Driver
     jpa.properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     jpa.properties.hibernate.temp.use_jdbc_metadata_defaults: false
